@@ -1,6 +1,3 @@
-# $Id: input_timespen.rb,v 0.80 2011-06-12 06:46:43 fdiary Exp $
-# Copyright (C) 2011 mechamogera
-
 require 'time'
 
 def input_timespan(uniq_id)
