@@ -13,7 +13,9 @@ def name_link(page_name, sec_str, link_name = nil)
       page_info = @db.page_info.find do |item| item[page_name] end
       title = page_info[page_name][:title]
     end
-    link_name = "#{title}##{sec_str.unescapeHTML}"
+    link_str = "#{title}##{sec_str.unescapeHTML}"
+  else
+    link_str = link_name
   end
 
   count = 0
@@ -21,11 +23,12 @@ def name_link(page_name, sec_str, link_name = nil)
     next unless line =~ /^!+\s*(.+)/
     target = $1.to_s
     if target == sec_str.unescapeHTML
-      return "<a href=\"#{hiki_url(page_name)}#l#{count}\">#{link_name.escapeHTML}</a>"
+      return "<a href=\"#{hiki_url(page_name)}#l#{count}\">#{link_str.escapeHTML}</a>"
     end
     count += 1
   end
 
-  return sec_str.escapeHTML
+  link_str = title unless link_name
+  return "<a href=\"#{hiki_url(page_name)}\">#{link_str.escapeHTML}</a>"
 end
 
