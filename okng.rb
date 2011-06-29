@@ -2,7 +2,7 @@ def okng(uniq_id)
   return '' if @conf.use_session && !@session_id
 
   lines = @db.load( @page )
-  pattern = /(OK|NG)?\{\{okng\("#{uniq_id.unescapeHTML}"(.*)\}\}/
+  pattern = /(OK|NG)?\{\{okng\("#{Regexp.escape(uniq_id.unescapeHTML)}"(.*)\}\}/
 
   lines.each do |line|
     if line =~ pattern
@@ -37,7 +37,7 @@ def okng_post
   md5hex = @db.md5hex( @page )
 
   flag = false
-  pattern = /(OK|NG)?\{\{okng\("#{uniq_id}"(.*)\}\}/
+  pattern = /(OK|NG)?\{\{okng\("#{Regexp.escape(uniq_id)}"(.*)\}\}/
 
   content = ''
   lines.each do |line|

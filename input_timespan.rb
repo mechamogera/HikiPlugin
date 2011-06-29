@@ -3,7 +3,7 @@ require 'time'
 def input_timespan(uniq_id)
   return '' if @conf.use_session && !@session_id
 
-  pattern = /(\d+min\(\d{2}:\d{2}-\d{2}:\d{2}\))?\{\{input_timespan\("#{uniq_id.unescapeHTML}".*\}\}/   
+  pattern = /(\d+min\(\d{2}:\d{2}-\d{2}:\d{2}\))?\{\{input_timespan\("#{Regexp.escape(uniq_id.unescapeHTML)}".*\}\}/   
   lines = @db.load( @page )
   lines.each do |line|
     if line =~ pattern
@@ -43,7 +43,7 @@ def input_timespan_post
   md5hex = @db.md5hex( @page )
 
   flag = false
-  pattern = /(\d+min\(\d{2}:\d{2}-\d{2}:\d{2}\))?\{\{input_timespan\("#{uniq_id}"(.*)\}\}/   
+  pattern = /(\d+min\(\d{2}:\d{2}-\d{2}:\d{2}\))?\{\{input_timespan\("#{Regexp.escape(uniq_id)}"(.*)\}\}/   
 
   span = Time.parse(end_time) - Time.parse(start_time)
   time = "#{span.to_i/60}min(#{start_time}-#{end_time})"

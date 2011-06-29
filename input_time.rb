@@ -1,7 +1,7 @@
 def input_time(uniq_id)
   return '' if @conf.use_session && !@session_id
 
-  pattern = /(\d{2}:\d{2})?\{\{input_time\("#{uniq_id.unescapeHTML}".*\}\}/   
+  pattern = /(\d{2}:\d{2})?\{\{input_time\("#{Regexp.escape(uniq_id.unescapeHTML)}".*\}\}/   
   lines = @db.load( @page )
   time = "HH:MM"
   lines.each do |line|
@@ -40,7 +40,7 @@ def input_time_post
   md5hex = @db.md5hex( @page )
 
   flag = false
-  pattern = /(\d{2}:\d{2})?\{\{input_time\("#{uniq_id}"(.*)\}\}/ 
+  pattern = /(\d{2}:\d{2})?\{\{input_time\("#{Regexp.escape(uniq_id)}"(.*)\}\}/ 
 
   content = ''
   lines.each do |line|
