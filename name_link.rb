@@ -3,6 +3,7 @@ def name_link(page_name, sec_str, link_name = nil)
   title = nil
   unless data
     page_info = @db.page_info.find do |item| item.to_a[0][1][:title] == page_name end
+    return "name_link error : can't find page [#{page_name}]" unless page_info
     title = page_name
     page_name = page_info.to_a[0][0]
     data = @db.load(page_name)
@@ -30,5 +31,9 @@ def name_link(page_name, sec_str, link_name = nil)
 
   link_str = title unless link_name
   return "<a href=\"#{hiki_url(page_name)}\">#{link_str.escapeHTML}</a>"
+end
+
+def cname_link(sec_str, link_name = nil)
+  name_link(@page, sec_str, link_name)
 end
 
