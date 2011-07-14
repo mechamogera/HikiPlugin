@@ -121,7 +121,7 @@ module WorkPlugin
 
     def get_value(params)
       value = params["time_#{@uniq_id}"][0]
-      return nil if value =~ /^#{self.class.pattern}$/
+      return nil unless value =~ /^#{self.class.pattern}$/
       return value
     end
   end
