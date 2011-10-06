@@ -24,6 +24,12 @@ def work_record(title = "record")
   FORM
 end
 
+def work_free_text_start
+end
+
+def work_free_text_end
+end
+
 module WorkPlugin
   class Base
     class << self
@@ -31,8 +37,8 @@ module WorkPlugin
       attr_reader :pattern
     end
 
-    def initialize(uniq_id)
-      @uniq_id = uniq_id
+    def initialize(*args)
+      @uniq_id = args[0]
     end
 
     def already_input?(lines)
@@ -126,13 +132,48 @@ module WorkPlugin
     end
   end
 
-  List = [OkNg, TimeSpan, Time]
+  class FreeText < Base
+    @method_name = "work_free_text"
+    @pattern = '\{\{work_free_text_start\}\}.+?\{\{work_free_text_end\}\}'
+
+    def initialize(*args)
+      super(args[0])
+      @options = {:default => "", :size => 10}
+      args[1..-1].each do |x|
+        case x
+        when String
+          @options[:default] = x
+        when Integer
+          @options[:size] = x
+        end
+      end
+    end
+
+    def self.uniq_id(param)
+      return nil unless param =~ /^free_text_/
+      return param.sub(/^free_text_/, "")
+    end
+
+    def form
+      <<-FORM
+<input type="text" name="free_text_#{@uniq_id}" value="#{@options[:default]}" size="#{@options[:size]}">
+      FORM
+    end
+
+    def get_value(params)
+      value = params["free_text_#{@uniq_id}"][0]
+      return nil if value.empty?
+      return "{{work_free_text_start}}#{value}{{work_free_text_end}}"
+    end
+  end
+
+  List = [OkNg, TimeSpan, Time, FreeText]
 end
 
 class << self
   WorkPlugin::List.each do |klass|
-    define_method(klass.method_name.to_sym) do |uniq_id|
-      obj = klass.new(uniq_id)
+    define_method(klass.method_name.to_sym) do |*args|
+      obj = klass.new(*args)
       return '' if obj.already_input?(@db.load(@page))
 
       return obj.form
@@ -174,4 +215,6 @@ export_plugin_methods(:work_form_start,
                       :work_form_end,
                       :work_record, 
                       :work_post,
+                      :work_free_text_start,
+                      :work_free_text_end,
                       *methods)
