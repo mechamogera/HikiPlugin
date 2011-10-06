@@ -150,19 +150,21 @@ module WorkPlugin
     end
 
     def self.uniq_id(param)
-      return nil unless param =~ /^free_text_/
-      return param.sub(/^free_text_/, "")
+      return nil unless param =~ /^free_text_value_/
+      return param.sub(/^free_text_value_/, "")
     end
 
     def form
       <<-FORM
-<input type="text" name="free_text_#{@uniq_id}" value="#{@options[:default]}" size="#{@options[:size]}">
+<input type="text" name="free_text_value_#{@uniq_id}" value="#{@options[:default]}" size="#{@options[:size]}">
+<input type="hidden" name="free_text_default_#{@uniq_id}" value="#{@options[:default]}">
       FORM
     end
 
     def get_value(params)
-      value = params["free_text_#{@uniq_id}"][0]
-      return nil if value.empty?
+      value = params["free_text_value_#{@uniq_id}"][0]
+      default = params["free_text_default_#{@uniq_id}"][0] || ""
+      return nil if value == default
       return "{{work_free_text_start}}#{value}{{work_free_text_end}}"
     end
   end
